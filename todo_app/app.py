@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect
 import json
 import os
+import datetime
 
 app = Flask(__name__)
 
@@ -26,7 +27,7 @@ def index():
 def add_task():
     new_task = request.form['task']
     if new_task:
-        tasks.append(new_task)
+        tasks.append(new_task + ' ' +str(datetime.date.today()))
         save_tasks(tasks)
     return redirect('/')
 
@@ -34,6 +35,13 @@ def add_task():
 def delete_task(task_id):
     if 0 <= task_id < len(tasks):
         tasks.pop(task_id)	
+        save_tasks(tasks)
+    return redirect('/')
+
+@app.route('/alldelete', methods=['POST'])
+def alldelete():
+    if 0 < len(tasks):
+        tasks.clear()
         save_tasks(tasks)
     return redirect('/')
 

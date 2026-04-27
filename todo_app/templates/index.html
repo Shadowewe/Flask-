@@ -3,10 +3,11 @@
 <head>
     <title>Список дел</title>
     <style>
-        body { font-family: Arial; margin: 40px; }
+        body { font-family: Arial; margin: 40px; background-color: darkgray; }
         .done { text-decoration: line-through; color: gray; }
         ul { list-style: none; padding: 0; }
         li { margin: 10px 0; }
+        h1 { color: blue; }
     </style>
 </head>
 <body>
@@ -25,6 +26,11 @@
 <form method="POST" action="/add">
     <input type="text" name="task" placeholder="Новая задача" required>
     <button type="submit">Добавить</button>
+</form>
+
+<h3>Удалить все</h3>
+<form method="POST" action="/alldelete">
+    <button type="submit">Удалить</button>
 </form>
 
 </body>
