@@ -27,8 +27,9 @@ def index():
 def add_task():
     new_task = request.form['task']
     if new_task:
-        tasks.append(new_task + ' ' +str(datetime.date.today()))
-        save_tasks(tasks)
+          today = datetime.date.today().strftime('%Y-%m-%d')
+          tasks.append({'text': new_task, 'date': today, 'done': False})
+          save_tasks(tasks)
     return redirect('/')
 
 @app.route('/delete/<int:task_id>')
@@ -44,6 +45,29 @@ def alldelete():
         tasks.clear()
         save_tasks(tasks)
     return redirect('/')
+
+@app.route('/edit/<int:task_id>', methods=['GET', 'POST'])
+def edit_task(task_id):
+    if task_id < 0 or task_id >= len(tasks):
+        return "Задача не найдена", 404
+
+    if request.method == 'POST':
+        old_text = tasks[task_id]['text']
+        new_text = request.form.get('task', '').strip()
+
+        if new_text == '':
+            return render_template('edit.html', task=['task.text'], message="Текст не может быть пустым!")
+
+        if new_text == old_text:
+            return render_template('edit.html', task=['task.text'], message="Ничего не изменено")
+
+        if new_text:
+            tasks[task_id]['text'] = new_text
+            save_tasks(tasks)
+        return redirect('/')
+
+    else:
+        return render_template('edit.html', task=tasks[task_id])
 
 #Доделать
 
