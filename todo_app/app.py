@@ -69,6 +69,37 @@ def edit_task(task_id):
     else:
         return render_template('edit.html', task=tasks[task_id])
 
+@app.route('/toggle/<int:task_id>')
+def toggle_task(task_id):
+    if 0 <= task_id < len(tasks):
+        tasks[task_id]['done'] = not tasks[task_id]['done']
+        save_tasks(tasks)
+    return redirect('/')
+
+@app.route('/active')
+def active_tasks():
+    filtered = [t for t in tasks if not t['done']]
+    return render_template('index.html', tasks=filtered)
+
+@app.route('/completed')
+def completed_tasks():
+    filtered = [t for t in tasks if t['done']]
+    return render_template('index.html', tasks=filtered)
+
+@app.route('/complete_all', methods=['POST'])
+def complete_all():
+    for task in tasks:
+        task['done'] = True
+    save_tasks(tasks)
+    return redirect('/')
+
+@app.route('/undo_all', methods=['POST'])
+def undo_all():
+    for task in tasks:
+        task['done'] = False
+    save_tasks(tasks)
+    return redirect('/')
+
 #Доделать
 
 if __name__ == '__main__':

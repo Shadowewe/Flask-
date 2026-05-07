@@ -12,13 +12,26 @@
 </head>
 <body>
     <h1>Мои задачи</h1>
+    <p>Осталось задач: {{ tasks|selectattr('done', 'equalto', False)|list|length }}</p>
+
+    <h3>Фильтрация</h3>
+    <a href="/active">Фильтрация по активным задачам</a> <p></p>
+    <a href="/completed">Фильтрация по выполненным задачам</a>
+
+    <h3>Список дел</h3>
     
     <ul>
     {% for task in tasks %}
         <li>
-            {{ task.text }} — <small>{{ task.date }}</small>
-            <a href="/delete/{{ loop.index0 }}">Удалить</a>
-            <a href="/edit/{{ loop.index0 }}">Редактировать</a>
+            {% if task.done %}
+                <s>{{ task.text }}</s>
+            {% else %}
+                {{ task.text }}
+            {% endif %}
+            — <small>{{ task.date }}</small>
+            <a href="/toggle/{{ loop.index0 }}">✅Выполнено</a>
+            <a href="/edit/{{ loop.index0 }}"> Редактировать</a>
+            <a href="/delete/{{ loop.index0 }}"> Удалить</a>
         </li>
     {% endfor %}
 </ul>
@@ -32,6 +45,16 @@
 <h3>Удалить все</h3>
 <form method="POST" action="/alldelete">
     <button type="submit">Удалить</button>
+</form>
+
+<h3>Выполнить все задачи</h3>
+<form method="POST" action="/complete_all">
+    <button type="submit">Выполнить</button>
+</form>
+
+<h3>Отменить выполнение</h3>
+<form method="POST" action="/undo_all">
+    <button type="submit">Отменить</button>
 </form>
 
 </body>
