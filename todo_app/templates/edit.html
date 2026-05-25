@@ -15,6 +15,14 @@
     {% endif %}
     <form method="POST">
         <input type="text" name="task" value="{{ task.text }}" required>
+        <select name = "priority">
+            <option value="высокий"
+                {% if task.priority == 'высокий' %}selected{% endif %}>Высокий</option>
+            <option value="средний"
+                {% if task.priority == 'средний' %}selected{% endif %}>Средний</option>
+            <option value="низкий"
+                {% if task.priority == 'низкий' %}selected{% endif %}>Низкий</option>
+        </select>
         <button type="submit">Сохранить</button>
         <a href="/">Отмена</a>
     </form>

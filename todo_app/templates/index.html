@@ -8,19 +8,49 @@
         ul { list-style: none; padding: 0; }
         li { margin: 10px 0; }
         h1 { color: blue; }
+        .high {color: red; }
+        .medium {color: yellow; }
+        .low {color: greenyellow; }
     </style>
 </head>
 <body>
     <h1>Мои задачи</h1>
     <p>Осталось задач: {{ tasks|selectattr('done', 'equalto', False)|list|length }}</p>
+    <p>Высоких: {{ tasks|selectattr('priority', 'equalto', 'высокий')|list|length }}</p>
+    <p>Средних: {{ tasks|selectattr('priority', 'equalto', 'средний')|list|length }}</p>
+    <p>Низких: {{ tasks|selectattr('priority', 'equalto', 'низкий')|list|length }}</p>
 
     <h3>Фильтрация</h3>
-    <a href="/active">Фильтрация по активным задачам</a> <p></p>
-    <a href="/completed">Фильтрация по выполненным задачам</a>
+    <p>
+        <a href="/active">Фильтрация по активным задачам</a> |
+        <a href="/completed">Фильтрация по выполненным задачам</a> |
+        <a href="/by_priority">По приоритету</a> |
+        <a href="/by_priority_active">По приоритету активные</a> |
+    </p>
 
     <h3>Список дел</h3>
+
+    <ul>
+        <li class="
+            {% if task.priority == 'высокий' %}
+            
+            {% elif task.priority == 'средний' %}medium
+
+            {% elif task.priority == 'низкий' %}low
+
+            {% endif %}
+
+        "></li>
+    </ul>
     
     <ul>
+        <li class="
+            {% if task.priority == 'высокий' %}high
+            {% elif task.priority == 'средний' %}medium
+            {% elif task.priority == 'низкий' %}low
+            {% endif %}
+        ">
+
     {% for task in tasks %}
         <li>
             {% if task.done %}
@@ -28,6 +58,15 @@
             {% else %}
                 {{ task.text }}
             {% endif %}
+
+            {% if task.priority == 'высокий' %}
+                🔴
+            {% elif task.priority == 'средний' %}
+                🔴
+            {% else %}
+                🔴
+            {% endif %}
+
             — <small>{{ task.date }}</small>
             <a href="/toggle/{{ loop.index0 }}">✅Выполнено</a>
             <a href="/edit/{{ loop.index0 }}"> Редактировать</a>
@@ -39,6 +78,11 @@
     <h2>Добавить задачу</h2>
 <form method="POST" action="/add">
     <input type="text" name="task" placeholder="Новая задача" required>
+    <select name="priority">
+        <option value="высокий">Высокий</option>
+        <option value="средний" selected>Средний</option>
+        <option value="низкий">Низкий</option>
+    </select>
     <button type="submit">Добавить</button>
 </form>
 

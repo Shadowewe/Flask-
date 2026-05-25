@@ -25,12 +25,19 @@ def index():
 
 @app.route('/add', methods=['POST'])
 def add_task():
-    new_task = request.form['task']
-    if new_task:
-          today = datetime.date.today().strftime('%Y-%m-%d')
-          tasks.append({'text': new_task, 'date': today, 'done': False})
-          save_tasks(tasks)
-    return redirect('/')
+   new_task = request.form.get('task')
+   priority = request.form.get('priority', 'средний')
+
+   if new_task:
+        today = datetime.date.today().strftime('%Y-%m-%d')
+        tasks.append({
+            'text': new_task,
+            'date': today,
+            'done': False,
+            'priority': priority
+        })
+        save_tasks(tasks)
+        return redirect('/')
 
 @app.route('/delete/<int:task_id>')
 def delete_task(task_id):
@@ -51,23 +58,26 @@ def edit_task(task_id):
     if task_id < 0 or task_id >= len(tasks):
         return "Задача не найдена", 404
 
+    task = tasks[task_id]
+
     if request.method == 'POST':
-        old_text = tasks[task_id]['text']
         new_text = request.form.get('task', '').strip()
+        new_priority = request.form.get('priority', 'средний')
+        old_text = task['text']
+        old_priority = task.get('priority', 'средний')
 
         if new_text == '':
-            return render_template('edit.html', task=['task.text'], message="Текст не может быть пустым!")
+            return render_template('edit.html', task=task, message='Текст не может быть пустым!')
 
-        if new_text == old_text:
-            return render_template('edit.html', task=['task.text'], message="Ничего не изменено")
-
-        if new_text:
-            tasks[task_id]['text'] = new_text
-            save_tasks(tasks)
+        if new_text == old_text and new_priority == old_priority:
+            return render_template('edit.html', task=task, message='Ничего не изменено')
+        
+        task['text'] = new_text
+        task['priority'] = new_priority
+        save_tasks(tasks)
         return redirect('/')
-
     else:
-        return render_template('edit.html', task=tasks[task_id])
+        return render_template('edit.html', task=task)
 
 @app.route('/toggle/<int:task_id>')
 def toggle_task(task_id):
@@ -100,7 +110,30 @@ def undo_all():
     save_tasks(tasks)
     return redirect('/')
 
-#Доделать
+@app.route('/by_priority')
+def by_priority():
+    priority_order = {'высокий': 3, 'средний': 2, 'низкий': 1}
+
+    sorted_tasks = sorted(
+        tasks,
+        key = lambda task: priority_order.get(task.get('priority', 'средний')),
+        reverse = True
+    )
+
+    return render_template('index.html', tasks = sorted_tasks)
+
+@app.route('/by_priority_active')
+def by_priority_active():
+    priority_order = {'высокий': 3, 'средний': 2, 'низкий': 1}
+
+    sorted_tasks = sorted(
+        tasks,
+        key = lambda task: priority_order.get(task.get('priority', 'средний')),
+        reverse = True
+    )
+
+    filtered = [t for t in sorted_tasks if not t['done']]
+    return render_template('index.html', tasks=filtered)
 
 if __name__ == '__main__':
     app.run(debug=True)
