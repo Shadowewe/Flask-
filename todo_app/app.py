@@ -135,5 +135,14 @@ def by_priority_active():
     filtered = [t for t in sorted_tasks if not t['done']]
     return render_template('index.html', tasks=filtered)
 
+@app.route('/search')
+def search():
+    query = request.args.get('q', '').strip().lower()
+    if query:
+        filtered_tasks = [task for task in tasks if query in task['text'].lower()]
+    else:
+        filtered_tasks = tasks
+    return render_template('index.html', tasks=filtered_tasks, search_query=query)
+
 if __name__ == '__main__':
     app.run(debug=True)

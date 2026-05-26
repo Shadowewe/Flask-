@@ -88,5 +88,11 @@
     <button type="submit">Отменить</button>
 </form>
 
+<h3>Поиск</h3>
+<form action="/search" method="get" class="search-form">
+    <input type="text" name="q" placeholder="Поиск по задачам..." value="{{ search_query or '' }}">
+    <button type="submit"> Найти</button>
+</form>
+
 </body>
 </html>
