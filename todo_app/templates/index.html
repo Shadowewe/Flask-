@@ -31,28 +31,14 @@
     <h3>Список дел</h3>
 
     <ul>
-        <li class="
-            {% if task.priority == 'высокий' %}
-            
-            {% elif task.priority == 'средний' %}medium
 
-            {% elif task.priority == 'низкий' %}low
-
-            {% endif %}
-
-        "></li>
-    </ul>
-    
-    <ul>
+    {% for task in tasks %}
         <li class="
             {% if task.priority == 'высокий' %}high
             {% elif task.priority == 'средний' %}medium
             {% elif task.priority == 'низкий' %}low
             {% endif %}
         ">
-
-    {% for task in tasks %}
-        <li>
             {% if task.done %}
                 <s>{{ task.text }}</s>
             {% else %}
@@ -62,9 +48,9 @@
             {% if task.priority == 'высокий' %}
                 🔴
             {% elif task.priority == 'средний' %}
-                🔴
+                🟡
             {% else %}
-                🔴
+                🟢
             {% endif %}
 
             — <small>{{ task.date }}</small>
@@ -73,6 +59,7 @@
             <a href="/delete/{{ loop.index0 }}"> Удалить</a>
         </li>
     {% endfor %}
+
 </ul>
 
     <h2>Добавить задачу</h2>
