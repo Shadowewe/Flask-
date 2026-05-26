@@ -144,5 +144,20 @@ def search():
         filtered_tasks = tasks
     return render_template('index.html', tasks=filtered_tasks, search_query=query)
 
+@app.route('/sort/date')
+def sort_by_date(): 
+    sorted_tasks = sorted(tasks, key=lambda t: t.get('date', ''), reverse=True)
+    return render_template('index.html', tasks=sorted_tasks)
+
+@app.route('/sort/status')
+def sort_by_status():
+    sorted_tasks = sorted(tasks, key=lambda t: t.get('done', False))
+    return render_template('index.html', tasks=sorted_tasks)
+
+@app.route('/sort/alpha')
+def sort_by_alpha():
+    sorted_tasks = sorted(tasks, key=lambda t: t.get('text', '').lower())
+    return render_template('index.html', tasks=sorted_tasks)
+
 if __name__ == '__main__':
     app.run(debug=True)
