@@ -152,7 +152,7 @@ def sort_by_date():
 @app.route('/sort/status')
 def sort_by_status():
     sorted_tasks = sorted(tasks, key=lambda t: t.get('done', False))
-    return render_template('index.html', tasks=sorted_tasks)
+    return render_template('index.html', tasks=sorted_tasks[::-1])
 
 @app.route('/sort/alpha')
 def sort_by_alpha():
